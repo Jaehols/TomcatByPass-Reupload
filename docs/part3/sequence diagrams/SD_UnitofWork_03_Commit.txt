@@ -1,0 +1,65 @@
+title UnitOfWork commit
+
+participant "UnitOfWork" as uow
+participant "<<static>> DataMapper" as DataMapper
+participant "mapper :: DataMapper" as Mapper
+participant "<<static>> Session" as Session
+participant "currentConnection :: Connection" as Connection
+
+[ -> uow: commit()
+activate uow
+
+
+
+loop for obj: DomainObject in new
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: mapper
+    deactivate DataMapper
+    
+    uow->Mapper: insert(obj)
+    activate Mapper
+      Mapper->Session: getSession()
+      activate Session
+      Mapper<--Session: currentConnection
+      deactivate Session
+      Mapper -> Connection: sqlinsert(obj)
+    deactivate Mapper
+end
+
+loop for obj: DomainObject in dirty
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: mapper
+    deactivate DataMapper
+    
+    uow->Mapper: update(obj)
+    activate Mapper
+      Mapper->Session: getSession()
+      activate Session
+      Mapper<--Session: currentConnection
+      deactivate Session
+    Mapper -> Connection: sqlupdate(obj)
+    deactivate Mapper
+end
+
+loop for obj: DomainObject in delete
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: mapper
+    deactivate DataMapper
+    
+    uow->Mapper: delete(obj)
+    activate Mapper
+      Mapper->Session: getSession()
+      activate Session
+      Mapper<--Session: currentConnection
+      deactivate Session
+    Mapper -> Connection: sqldelete(obj)
+    deactivate Mapper
+end
+
+
+deactivate uow

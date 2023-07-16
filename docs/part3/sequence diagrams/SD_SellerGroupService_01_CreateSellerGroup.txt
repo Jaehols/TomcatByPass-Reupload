@@ -1,0 +1,44 @@
+title SellerGroupService.saveNewSellerGroup(name, username)
+
+participant SellerGroupService
+participant AppUserService
+participant AppUserMapper
+participant "currentConnection :: Connection" as connection
+
+activate SellerGroupService
+
+SellerGroupService->AppUserService:findByUsername(username)
+
+activate AppUserService
+
+AppUserService->AppUserMapper:findByUsername(username)
+
+activate AppUserMapper
+
+AppUserMapper->connection:SELECT * FROM app_user WHERE username = ?;
+
+activate connection
+
+connection-->AppUserMapper:return AppUser
+
+deactivate connection
+
+AppUserMapper-->AppUserService:return AppUser
+
+deactivate AppUserMapper
+
+AppUserService-->SellerGroupService:return AppUser
+
+deactivate AppUserService
+
+SellerGroupService->SellerGroupService:sgId = UUID.randomUUID()
+
+SellerGroupService->SellerGroupService:appUsers = new ArrayList<>();
+
+SellerGroupService->SellerGroupService:appUsers.add(appUser)
+
+SellerGroupService->SellerGroupService:sellerGroup = new SellerGroup(sgId, name, appUsers)
+
+SellerGroupService->SellerGroupService:sellerGroup.create()
+
+deactivate SellerGroupService

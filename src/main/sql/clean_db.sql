@@ -1,0 +1,10 @@
+BEGIN;
+DELETE FROM auction_order;
+DELETE FROM bid;
+DELETE FROM fixed_order;
+DELETE FROM user_sg_mapping;
+DELETE FROM app_user;
+DELETE FROM auction_listing;
+DELETE FROM fixed_listing;
+DELETE FROM seller_group;
+END;

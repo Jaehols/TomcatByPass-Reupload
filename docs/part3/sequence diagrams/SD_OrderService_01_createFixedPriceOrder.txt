@@ -1,0 +1,35 @@
+title OrderService.createFixedPriceOrder(params, listingId, username)
+
+participant "OrderService" as orders
+
+participant "FixedListingMapper" as listingMapper
+participant "AppUserService" as userservice
+participant "AppUserMapper" as usermapper
+
+participant "currentConnection :: Connection" as connection
+
+activate connection
+[->orders:createFixedPriceOrder(params, listingId, username)
+activate orders
+
+orders->listingMapper:findByListingId(listingId)
+activate listingMapper
+listingMapper->connection:SELECT * FROM fixed_listing WHERE listing_id = ?
+listingMapper<--connection:FixedListing
+orders<--listingMapper:FixedListing
+deactivate listingMapper
+
+orders->userservice:findByUsername(username)
+activate userservice
+userservice->usermapper:findByUsername(name)
+activate usermapper
+usermapper->connection:SELECT * FROM app_user WHERE username = ?
+usermapper<--connection:AppUser
+userservice<--usermapper:AppUser
+deactivate usermapper
+orders<--userservice:AppUser
+deactivate userservice
+orders->orders:FixedPriceOrder.builder.build()
+orders->orders:FixedPriceOrder.create()
+orders->orders:FixedListing.setQuantity(listing.getQuantity -\n FixedPriceOrder.getQuantity())
+deactivate orders

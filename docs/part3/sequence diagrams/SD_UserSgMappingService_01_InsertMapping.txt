@@ -1,0 +1,111 @@
+title UserSgMappingService.insertMapping(username, sgId)
+
+participant UserSgMappingService
+participant AuthService
+participant AppUserService
+participant AppUserMapper
+participant SellerGroupService
+participant SellerGroupMapper
+participant UserSgMappingMapper
+participant "currentConnection :: Connection" as connection
+
+UserSgMappingService->AuthService:checkUserSellerGroupPermission(username, sgId)
+
+activate AuthService
+
+AuthService->AuthService:isUserAdmin(username)
+
+AuthService->AppUserMapper:findByUsername(username)
+
+activate AppUserMapper
+
+AppUserMapper->connection:SELECT * FROM app_user WHERE username = ?
+
+activate connection
+
+connection-->AppUserMapper:AppUser
+
+deactivate connection
+
+AppUserMapper-->AuthService:AppUser
+
+deactivate AppUserMapper
+
+AuthService->AuthService:isUserInSellerGroup(username, sgid)
+
+AuthService->UserSgMappingMapper:findUserSgMapping(username, sgId)
+
+activate UserSgMappingMapper
+
+UserSgMappingMapper->connection:SELECT * FROM user_sg_mapping WHERE username=? AND sg_id=?
+
+activate connection
+
+connection-->UserSgMappingMapper:return UserSgMapping
+
+deactivate connection
+
+UserSgMappingMapper-->AuthService:return UserSgMapping
+
+deactivate UserSgMappingMapper
+
+AuthService-->UserSgMappingService:return Boolean
+
+deactivate AuthService
+
+UserSgMappingService->AppUserService:appUser = findByUsername(username)
+
+activate UserSgMappingService
+
+activate AppUserService
+
+AppUserService->AppUserMapper:findByUsername(username)
+
+
+activate AppUserMapper
+
+AppUserMapper->connection:SELECT * FROM app_user WHERE username = ?
+
+activate connection
+
+connection-->AppUserMapper:return AppUser
+
+deactivate connection
+
+AppUserMapper-->AppUserService:return AppUser
+
+deactivate AppUserMapper
+
+AppUserService-->UserSgMappingService:return AppUser
+
+deactivate AppUserService
+
+UserSgMappingService->SellerGroupService:sellerGroup = findBySgId(sgId)
+
+activate SellerGroupService
+
+SellerGroupService->SellerGroupMapper:findBySgId(sgId)
+
+activate SellerGroupMapper
+
+SellerGroupMapper->connection:SELECT * FROM seller_group WHERE sg_id = ?;
+
+activate connection
+
+connection-->SellerGroupMapper:return SellerGroup
+
+deactivate connection
+
+SellerGroupMapper-->SellerGroupService:return SellerGroup
+
+deactivate SellerGroupMapper
+
+SellerGroupService-->UserSgMappingService:return SellerGroup
+
+deactivate SellerGroupService
+
+UserSgMappingService->UserSgMappingService:userSgMapping = new UserSgMapping(appUser, sellerGroup)
+
+UserSgMappingService->UserSgMappingService:userSgMapping.create()
+
+deactivate UserSgMappingService

@@ -1,0 +1,71 @@
+@startuml
+'Click here for a plantUML notation guide: https://plantuml.com/class-diagram'
+/' Q: Does UML notation mean everything needs to be declared as int, string etc?
+      - Lecture slides don't contain types so probably not...'/
+/' Q: What UML notation should be used? (Ie use 0..* notation or just *?) '/
+/' Q: Should we include the ""Table data gateway" pattern? '/
+
+SellerGroup "1..*" -- "0..*" Listing : creates >
+User "1" -- "0..*" Order : orders >
+Order "0..*" -- "1" Listing : contains >
+SellerGroup "0..*" *-- "1..*" User : member of <
+Bid "0..*" -- "1" AuctionListing : bid for >
+User "1" -- "0..*" Bid : makes >
+Administrator -- Listing : manages >
+Administrator -- User : views >
+Administrator -- Order : views >
+Administrator -- SellerGroup : manages >
+
+
+
+Listing <|-- AuctionListing
+Listing <|-- FixedPriceListing
+
+/'Note: I originally had a customer and seller class which inherited from user,
+        but I realised all users should be able to buy and sell like on ebay & FB marketplace'/
+class User {
+    name
+    default address
+    date of birth
+}
+
+class SellerGroup {
+}
+
+class Administrator {
+}
+
+class Order {
+    date ordered
+    quantity
+    delivery address
+}
+
+abstract class Listing {
+    date listed
+    description
+    condition
+    brand
+    size
+    type
+    colour
+}
+
+class AuctionListing {
+    start time
+    end time
+    initial price
+    highest bid
+}
+
+class Bid {
+    price
+    time
+}
+
+class FixedPriceListing {
+    price
+    quantity
+}
+
+@enduml

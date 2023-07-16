@@ -1,0 +1,21 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: jamesvinnicombe
+  Date: 20/09/2022
+  Time: 8:23 pm
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<div class="navbar">
+    <div class="navbar_content">
+        <div class="navbar_title"><img class="navbar_icon" src="${pageContext.request.contextPath}/images/tomcatbypass_logo.png"/><span>TomcatBypass Marketplace</span></div>
+        <div class="navbar_menu">
+            <a class="navbar_button" href="${pageContext.request.contextPath}/auth/admin/admin-landing-page">Home</a>
+            <form action="${pageContext.request.contextPath}/logout" method="post" class="navbar_button">
+                <sec:csrfInput />
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </div>
+    </div>
+</div>

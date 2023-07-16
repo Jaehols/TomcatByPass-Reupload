@@ -1,0 +1,56 @@
+title UnitOfWork commit
+
+actor User
+
+participant "UnitOfWork" as uow
+
+participant "<<static>> DataMapper" as DataMapper
+
+participant "thingMapper :: DataMapper" as Mapper
+
+database PostgreSQL
+
+User -> uow: commit()
+activate uow
+
+loop for obj: DomainObject in new
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: thingMapper
+    deactivate DataMapper
+    
+    uow->Mapper: insert(obj)
+    activate Mapper
+    Mapper -> PostgreSQL: sqlinsert(obj)
+    deactivate Mapper
+end
+
+loop for obj: DomainObject in dirty
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: thingMapper
+    deactivate DataMapper
+    
+    uow->Mapper: update(obj)
+    activate Mapper
+    Mapper -> PostgreSQL: sqlupdate(obj)
+    deactivate Mapper
+end
+
+loop for obj: DomainObject in delete
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: thingMapper
+    deactivate DataMapper
+    
+    uow->Mapper: delete(obj)
+    activate Mapper
+    Mapper -> PostgreSQL: sqldelete(obj)
+    deactivate Mapper
+end
+
+
+deactivate uow

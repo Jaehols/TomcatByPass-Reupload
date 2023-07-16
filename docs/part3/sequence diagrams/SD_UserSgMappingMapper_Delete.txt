@@ -1,0 +1,18 @@
+title UserSgMappingMapper delete()
+
+participant UserSgMappingMapper
+participant "currentConnection :: Connection" as connection
+
+[->UserSgMappingMapper:delete(object, connection)
+
+activate UserSgMappingMapper
+
+UserSgMappingMapper->connection:DELETE FROM user_sg_mapping WHERE sg_id=? AND username=?
+
+activate connection
+
+connection-->UserSgMappingMapper:
+
+deactivate connection
+
+deactivate UserSgMappingMapper

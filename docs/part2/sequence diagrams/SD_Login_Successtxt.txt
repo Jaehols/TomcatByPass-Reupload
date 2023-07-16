@@ -1,0 +1,71 @@
+
+title Login
+
+actor User
+
+participant "Login Page" as LoginPage
+
+
+participant "Username Password\n authentication filter" as filter
+
+participant "Authentication Manager" as authManager
+
+participant "UserDetails Service" as udservice
+
+participant "AppUserMapper" as uMapper
+
+
+database PostgreSQL
+
+participant "UserBuilder\n" as uBuilder
+
+participant "Security Context" as context
+participant "Authentication\n Success Handler" as handler
+
+
+
+
+User -> LoginPage:login(username, password)
+
+activate LoginPage
+LoginPage -> LoginPage:encodePassword(password)
+
+
+
+LoginPage->filter:Request
+activate filter
+deactivate LoginPage
+filter->authManager:Authenticate
+activate authManager
+authManager->udservice:loadUserByUsername
+
+
+activate udservice
+udservice->uMapper:findByUsername(username)
+
+activate uMapper
+uMapper->PostgreSQL:getUsernameById(username)
+
+
+
+uMapper<--PostgreSQL:AppUser
+udservice<--uMapper:AppUser
+deactivate uMapper
+
+
+udservice->uBuilder:build(username, encodedPwd, Role)
+activate uBuilder
+
+udservice<--uBuilder:UserDetails
+deactivate uBuilder
+
+
+authManager<--udservice:UserDetails
+deactivate udservice
+
+filter<--authManager:Authenticate(UserDetails)
+deactivate authManager
+filter->context:Authentication(context)\n
+activate context
+filter->handler:Success
+activate handler

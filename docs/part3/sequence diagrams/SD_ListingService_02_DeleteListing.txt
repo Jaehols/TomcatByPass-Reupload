@@ -1,0 +1,43 @@
+title ListingService.deleteListing(listingId)
+
+activate ListingService
+
+ListingService->ListingService:listing = getById(listingId)
+activate ListingService
+
+ListingService->FixedListingMapper:listing = findByListingId(listingId)
+activate FixedListingMapper
+ListingService<--FixedListingMapper:return listing
+deactivate FixedListingMapper
+
+opt listing == null
+ListingService->AuctionListingMapper:listing = findByListingId(listingId)
+activate AuctionListingMapper
+ListingService<--AuctionListingMapper:return listing
+deactivate AuctionListingMapper
+deactivate ListingService
+end
+
+ListingService->ListingService:sgid = listing.getSellerGroup().getSgId()
+
+ListingService->AuthService:checkUserSellerGroupPermission(username, sgid)
+
+activate AuthService
+AuthService->AuthService:isUserAdmin(username)
+activate AuthService
+AuthService->AppUserMapper:user = findByUsername(username)
+activate AppUserMapper
+AuthService<--AppUserMapper:return user
+deactivate AppUserMapper
+deactivate AuthService
+
+AuthService->AuthService:isUserInSellerGroup(username, sgid)
+activate AuthService
+AuthService->UserSgMappingMapper:userSgMapping = findUserSgMapping(username, sgid)
+AuthService<--UserSgMappingMapper:return UserSellerGroupMapping
+deactivate AuthService
+
+ListingService<--AuthService:return Boolean
+
+ListingService->ListingService:listing.delete()
+deactivate ListingService

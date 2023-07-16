@@ -1,0 +1,27 @@
+title Insert Domain Object into DB
+
+participant DomainObject
+
+
+participant "UnitOfWork" as uow
+
+participant "<<static>> DataMapper" as DataMapper
+
+participant "mapper :: DataMapper" as Mapper
+
+[ -> *DomainObject: <<instantiate>>
+
+[ -> DomainObject: create()
+
+activate DomainObject
+DomainObject -> uow: registerNew(obj)
+deactivate DomainObject
+
+activate uow
+uow->uow: new.add(obj)
+deactivate uow
+
+[ -> uow: commit()
+activate uow
+	ref over uow,Mapper: see Unit of Work commit
+deactivate uow

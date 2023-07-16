@@ -1,0 +1,102 @@
+title UserSgMappingService.deleteMapping
+
+participant UserSgMappingService
+participant AuthService
+participant AppUserMapper
+participant UserSgMappingMapper
+participant SellerGroupMapper
+participant "currentConnection :: Connection" as connection
+
+[->UserSgMappingService:deleteMapping(username, sgId, loggedInUser)
+
+activate UserSgMappingService
+
+UserSgMappingService->AuthService:checkUserSellerGroupPermission(username, sgId)
+
+activate AuthService
+
+AuthService->AuthService:isUserAdmin(username)
+
+AuthService->AppUserMapper:findByUsername(username)
+
+activate AppUserMapper
+
+AppUserMapper->connection:SELECT * FROM app_user WHERE username = ?
+
+activate connection
+
+connection-->AppUserMapper:AppUser
+
+deactivate connection
+
+AppUserMapper-->AuthService:AppUser
+
+deactivate AppUserMapper
+
+AuthService->AuthService:isUserInSellerGroup(username, sgid)
+
+AuthService->UserSgMappingMapper:findUserSgMapping(username, sgId)
+
+activate UserSgMappingMapper
+
+UserSgMappingMapper->connection:SELECT * FROM user_sg_mapping WHERE username=? AND sg_id=?
+
+activate connection
+
+connection-->UserSgMappingMapper:return UserSgMapping
+
+deactivate connection
+
+UserSgMappingMapper-->AuthService:return UserSgMapping
+
+deactivate UserSgMappingMapper
+
+AuthService-->UserSgMappingService:return Boolean
+
+deactivate AuthService
+
+UserSgMappingService->AuthService:appUser = findByUsername(username)
+
+activate AuthService
+
+AuthService->AppUserMapper:findByUsername(username)
+
+activate AppUserMapper
+
+AppUserMapper->connection:SELECT * FROM app_user WHERE username = ?;
+
+activate connection
+
+connection-->AppUserMapper:return AppUser
+
+deactivate connection
+
+AppUserMapper-->AuthService:return AppUser
+
+deactivate AppUserMapper
+
+AuthService-->UserSgMappingService:return AppUser
+
+deactivate AuthService
+
+UserSgMappingService->SellerGroupMapper:sellerGroup = findBySgId(sgId)
+
+activate SellerGroupMapper
+
+SellerGroupMapper->connection:SELECT * FROM seller_group WHERE sg_id = ?
+
+activate connection
+
+connection-->SellerGroupMapper:return SellerGroup
+
+deactivate connection
+
+SellerGroupMapper-->UserSgMappingService:return SellerGroup
+
+deactivate SellerGroupMapper
+
+UserSgMappingService->UserSgMappingService:userSgMapping = new UserSgMapping(appUser, sellerGroup)
+
+UserSgMappingService->UserSgMappingService:userSgMapping.delete()
+
+deactivate UserSgMappingService

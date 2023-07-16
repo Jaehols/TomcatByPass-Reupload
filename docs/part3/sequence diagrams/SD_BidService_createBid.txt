@@ -1,0 +1,37 @@
+title BidService.createBid()
+
+participant BidService
+participant AuctionListingMapper
+participant AppUserService
+participant BidMapper
+
+[ -> BidService : createBid(value, listingId, username)
+activate BidService
+BidService->AuctionListingMapper: findByListingId(listingId)
+activate AuctionListingMapper
+BidService<--AuctionListingMapper: listing :: AuctionListing
+deactivate AuctionListingMapper
+
+BidService ->AppUserService : findByUsername(username)
+activate AppUserService
+BidService<--AppUserService: user :: AppUser
+deactivate AppUserService
+
+BidService ->BidMapper : findHighestBid(listingId)
+activate BidMapper
+BidService<--BidMapper: bid :: Bid
+deactivate BidMapper
+
+opt listing isnt over || value <= bid.value || value < list.reserve
+[<--BidService : throw OperationException
+deactivate BidService
+end
+activate BidService
+
+BidService->*Bid: new Bid()
+BidService->Bid: create()
+activate Bid
+	ref over Bid : see Unit of Work
+deactivate Bid
+
+deactivate BidService

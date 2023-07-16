@@ -1,0 +1,22 @@
+title ListingService.saveNewFixedListing()
+
+ListingService->AuthService:isUserInSellerGroup(username, sgid)
+activate ListingService
+
+activate AuthService
+AuthService->UserSgMappingMapper:findUserSgMapping(username, sgid)
+activate UserSgMappingMapper
+AuthService<--UserSgMappingMapper:return userSgMapping
+deactivate UserSgMappingMapper
+ListingService<--AuthService:return Boolean
+deactivate AuthService
+
+
+ListingService->SellerGroupMapper:sellerGroup = findBySgId(sgid)
+activate SellerGroupMapper
+ListingService<--SellerGroupMapper:return SellerGroup
+deactivate SellerGroupMapper
+
+ListingService->ListingService:fixedListing = new FixedListing(..., sellerGroup)
+ListingService->ListingService:fixedListing.create()
+deactivate ListingService

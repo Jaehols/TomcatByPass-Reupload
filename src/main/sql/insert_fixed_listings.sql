@@ -1,0 +1,13 @@
+BEGIN;
+insert into fixed_listing values ('98b7e5b5-78bf-4807-9af5-f5ca1db51fbe', '72b57bc4-8a51-4270-8841-1d5dc926f3bd', current_timestamp, '8.00', 'Brownie', 'NEW', '24');
+insert into fixed_listing values ('279aa5c8-4ce3-4482-9eb5-f1211aee5dba', '72b57bc4-8a51-4270-8841-1d5dc926f3bd', current_timestamp, '1.00', 'Self Respect', 'USED', '1');
+insert into fixed_listing values ('d2620838-7914-4bd7-a90b-bdc46471be22', '72b57bc4-8a51-4270-8841-1d5dc926f3bd', current_timestamp, '23.99', 'Runners', 'USED', '1');
+insert into fixed_listing values ('8fcb674b-e841-4a1d-abcb-4c3f61e30f2d', '72b57bc4-8a51-4270-8841-1d5dc926f3bd', current_timestamp, '2599.99', '1999 Ford Falcon Forte AU Auto', 'USED', '1');
+insert into fixed_listing values ('16ccfa18-3b95-4b8d-9fe5-51b3cf048a4a', '72b57bc4-8a51-4270-8841-1d5dc926f3bd', current_timestamp, '1500', '1998 Subaru Forester Limited 79V Auto AWD', 'USED', '1');
+insert into fixed_listing values ('ff6d3d8c-11e0-4aef-bda8-8c0ddb499302', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '123.99', 'Dodgy Couch', 'USED', '2');
+insert into fixed_listing values ('f301434b-ed6d-4edd-87ef-9da1ddd7ccba', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '5000', '40ft High Cube A Grade shipping containers in Melbourne 2016 build', 'USED', '1');
+insert into fixed_listing values ('15dca6f2-8922-486e-82f2-a6eedb24ea21', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '1300', 'Rottweiler puppies pure breed', 'NEW', '6');
+insert into fixed_listing values ('67cd2e18-ec71-4352-83f8-53a21eae30d3', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '20.99', 'Bald Tyres', 'USED', '4');
+insert into fixed_listing values ('ce9dba9b-0e4d-4a60-bb62-4927c57c23d7', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '5.99', 'Toms Salad', 'USED', '1');
+insert into fixed_listing values ('4cf2825b-85bc-4c05-bafa-08fd1b0d6c4e', '30aaccf5-8223-4db6-b76c-fd811c2423c7', current_timestamp, '39.99', 'Frank Body Original Face Scrub', 'NEW', '7');
+END;

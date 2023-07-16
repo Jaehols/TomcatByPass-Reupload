@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  master:
+    build: ./src/test/python/
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./src/test/python/:/home/locust
+    command: --master -f locustfiles --class-picker --host http://sda-tomcat:8080/tomcatbypass-1.0-SNAPSHOT
+
+  worker:
+    build: ./src/test/python/
+    volumes:
+      - ./src/test/python/:/home/locust
+    command: --worker -f locustfiles --master-host master
+
+  tomcat:
+    container_name: sda-tomcat
+    # --- To use Yourkit, uncomment the following line, and comment out the 'image' line.
+#    build: .
+    # --- To use Jprofiler, uncomment the following line, and comment out the 'build' line.
+    image: tomcat:9.0.68-jdk11-temurin-jammy
+    depends_on:
+      - postgresql
+    ports:
+      - "8080:8080"
+      - "10001:10001"  # Yourkit.
+    environment:
+      - POSTGRES_URL=jdbc:postgresql://sda-postgres:5432/sda
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+    volumes:
+      - ./target/tomcatbypass-1.0-SNAPSHOT.war:/usr/local/tomcat/webapps/tomcatbypass-1.0-SNAPSHOT.war
+      - $HOME/.m2/repository:/root/.m2/repository  # Cache maven dependencies.
+
+  postgresql:
+    container_name: sda-postgres
+    image: postgres
+    ports:
+      - "5444:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=sda
+    volumes:
+      - sda-postgres:/var/lib/postgresql/data
+
+volumes:
+  sda-postgres:

@@ -1,0 +1,31 @@
+title SellerGroupMapper update()
+
+participant SellerGroupMapper
+participant "currentConnection :: Connection" as connection
+
+[->SellerGroupMapper:update(object, connection)
+
+activate SellerGroupMapper
+
+SellerGroupMapper->connection:UPDATE seller_group SET name=? WHERE sg_id = ?
+
+activate connection
+
+connection-->SellerGroupMapper:
+
+SellerGroupMapper->connection:DELETE FROM user_sg_mapping WHERE sg_id=?
+
+connection-->SellerGroupMapper:
+
+loop AppUser appUser : appUsers
+
+
+SellerGroupMapper->connection:INSERT INTO user_sg_mapping (username, sg_id) VALUES (?, ?)
+
+connection-->SellerGroupMapper:
+
+end
+
+deactivate connection
+
+deactivate SellerGroupMapper

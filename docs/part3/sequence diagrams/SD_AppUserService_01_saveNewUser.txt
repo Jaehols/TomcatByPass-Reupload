@@ -1,0 +1,22 @@
+title AppUserService.saveNewUser(validatedUserParams) : success
+
+participant "AppUserService" as userservice
+participant "AppUserMapper" as usermapper
+participant "currentConnection :: Connection" as connection
+
+activate connection
+
+[->userservice:saveNewUser(validatedUserParams)
+activate userservice
+userservice->userservice:checkUserExists(validatedUserParams.username)
+userservice->userservice:findByUsername(username)
+userservice->usermapper:findByUsername(name)
+activate usermapper
+usermapper->connection:SELECT * FROM app_user WHERE username = ?
+usermapper<--connection:null
+userservice<--usermapper:null
+deactivate usermapper
+userservice->userservice:AppUser.builder()\n.username(validatedUserParams.username)\n.createTimeStamp.from(Instant.now())\n.email(validatedUserParams.email)\n.pwd(validatedUserParams.password)\n.ROLE(Roles.USER.name())\n.address(validatedUserParams.address)\n.build
+userservice->userservice:appUser.create()
+[<--userservice: true
+deactivate userservice

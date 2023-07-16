@@ -1,0 +1,42 @@
+title Modify Domain Object in DB
+
+actor User
+
+participant "thing :: DomainObject" as DomainObject
+
+
+participant "UnitOfWork" as uow
+
+participant "<<static>> DataMapper" as DataMapper
+
+participant "thingMapper :: DataMapper" as Mapper
+
+
+database PostgreSQL
+
+User -> DomainObject: setField(newVal)
+
+activate DomainObject
+DomainObject -> uow: registerDirty(obj)
+deactivate DomainObject
+
+activate uow
+uow->uow: dirty.add(obj)
+deactivate uow
+
+User -> uow: commit()
+activate uow
+loop for obj: DomainObject in dirty
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: thingMapper
+    deactivate DataMapper
+    
+    uow->Mapper: update(obj)
+    activate Mapper
+    Mapper -> PostgreSQL: sqlupdate(obj)
+    deactivate Mapper
+
+end
+deactivate uow

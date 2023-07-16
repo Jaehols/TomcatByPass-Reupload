@@ -1,0 +1,14 @@
+# Intellij files
+/.idea
+/target
+*.iml
+
+# Python files
+*.pyc
+/virtualenv
+__pycache__/
+
+# Miscellaneous
+*.log
+*.swp
+

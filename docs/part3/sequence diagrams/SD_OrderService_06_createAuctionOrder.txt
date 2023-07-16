@@ -1,0 +1,41 @@
+title OrderService.createAuctionOrder()
+
+participant OrderService
+participant AuctionOrderMapper
+participant AuctionListingMapper
+participant BidMapper
+
+[ -> OrderService : createAuctionOrder(listingId, username)
+activate OrderService
+
+OrderService->AuctionOrderMapper: listingHasAuctionOrder(listingId)
+activate AuctionOrderMapper
+OrderService<--AuctionOrderMapper: listingHasAuctionOrder
+deactivate AuctionOrderMapper
+
+OrderService->AuctionListingMapper: findByListingId(listingId)
+activate AuctionListingMapper
+OrderService<--AuctionListingMapper: listing :: Listing
+deactivate AuctionListingMapper
+
+
+OrderService->BidMapper: findHighestBid(listingId)
+activate BidMapper
+OrderService<--BidMapper: bid :: Bid
+deactivate BidMapper
+
+
+opt listingHasAuctionOrder || auction isnt over || bid.username != username
+[<--OrderService : throw OperationException
+deactivate OrderService
+end
+activate OrderService
+
+OrderService->*AuctionOrder: new AuctionOrder()
+OrderService->AuctionOrder: create()
+activate AuctionOrder
+	ref over AuctionOrder : see Unit of Work
+deactivate AuctionOrder
+
+
+deactivate OrderService

@@ -1,0 +1,61 @@
+@startuml
+
+' Configuration
+left to right direction
+
+' Actors
+actor Administrator
+actor Seller
+actor Buyer
+
+' Use Cases
+package "Marketplace System" {
+    usecase "View All Users" as UC1
+    usecase "View All Listings" as UC2
+    usecase "View All Orders" as UC3
+
+    usecase "Create a Seller Group" as UC4.1
+    usecase "Delete a Seller Group" as UC4.2
+    usecase "Add User to Seller Group" as UC5.1
+    usecase "Remove User from Seller Group" as UC5.2
+    
+    usecase "Create Fixed-Price Listing" as UC6.1
+    usecase "Create Auction Listing" as UC6.2
+    usecase "Remove Listing" as UC7
+
+    usecase "Search for Listing" as UC8
+    
+    usecase "Purchase a Fixed-Price Listing" as UC9
+    usecase "Place Bid on Auction Listing" as UC10
+
+    usecase "View My Orders" as UC11
+    usecase "Modify My Order" as UC12
+    usecase "Cancel My Order" as UC13
+}
+
+' Actor and Use Case Relationships
+
+Buyer -- UC8
+Buyer -- UC9
+Buyer -- UC10
+Buyer -- UC11
+Buyer -- UC12
+Buyer -- UC13
+
+UC6.1 -- Seller
+UC6.2 -- Seller
+UC11 -- Seller
+UC12 -- Seller
+UC13 -- Seller
+UC7 -- Seller
+
+UC7 -- Administrator
+UC1 -- Administrator
+UC2 -- Administrator
+UC3 -- Administrator
+UC4.1 -- Administrator
+UC4.2 -- Administrator
+UC5.1 -- Administrator
+UC5.2 -- Administrator
+
+@enduml

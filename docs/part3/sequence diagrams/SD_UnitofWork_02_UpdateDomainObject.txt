@@ -1,0 +1,26 @@
+title Modify Domain Object in DB
+
+participant DomainObject
+
+
+participant "UnitOfWork" as uow
+
+participant "<<static>> DataMapper" as DataMapper
+
+participant "mapper :: DataMapper" as Mapper
+
+
+[ -> DomainObject: setField(newVal)
+
+activate DomainObject
+DomainObject -> uow: registerDirty(obj)
+deactivate DomainObject
+
+activate uow
+uow->uow: dirty.add(obj)
+deactivate uow
+
+[ -> uow: commit()
+activate uow
+	ref over uow,Mapper: see Unit of Work commit
+deactivate uow

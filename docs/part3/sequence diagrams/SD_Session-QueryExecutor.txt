@@ -1,0 +1,18 @@
+title Use of Session in Queries
+
+participant QueryExecutor
+participant "<<static>> Session" as Session
+participant "currentConnection :: Connection" as Connection
+
+[->QueryExecutor: findAllObjects(query)
+activate QueryExecutor
+  QueryExecutor -> Session: getSession()
+  activate Session
+  	QueryExecutor<--Session: currentConnection
+  deactivate Session
+  QueryExecutor ->Connection: executeQuery(query)
+  activate Connection
+  QueryExecutor<--Connection: result
+  deactivate Connection
+  [<--QueryExecutor: result
+deactivate QueryExecutor

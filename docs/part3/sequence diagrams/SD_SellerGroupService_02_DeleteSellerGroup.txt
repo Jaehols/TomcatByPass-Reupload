@@ -1,0 +1,76 @@
+title SellerGroupService.deleteSellerGroup(sgId, username)
+
+participant SellerGroupService
+participant AuthService
+participant AppUserMapper
+participant UserSgMappingMapper
+participant SellerGroupMapper
+participant "currentConnection :: Connection" as connection
+
+[->SellerGroupService:deleteSellerGroup(sgId, username)
+
+activate SellerGroupService
+
+SellerGroupService->AuthService:checkUserSellerGroupPermission(username, sgId)
+
+activate AuthService
+
+AuthService->AuthService:isUserAdmin(username)
+
+AuthService->AppUserMapper:findByUsername(username)
+
+activate AppUserMapper
+
+AppUserMapper->connection:SELECT * FROM app_user WHERE username = ?
+
+activate connection
+
+connection-->AppUserMapper:AppUser
+
+deactivate connection
+
+AppUserMapper-->AuthService:AppUser
+
+deactivate AppUserMapper
+
+AuthService->AuthService:isUserInSellerGroup(username, sgid)
+
+AuthService->UserSgMappingMapper:findUserSgMapping(username, sgId)
+
+activate UserSgMappingMapper
+
+UserSgMappingMapper->connection:SELECT * FROM user_sg_mapping WHERE username=? AND sg_id=?
+
+activate connection
+
+connection-->UserSgMappingMapper:return UserSgMapping
+
+deactivate connection
+
+UserSgMappingMapper-->AuthService:return UserSgMapping
+
+deactivate UserSgMappingMapper
+
+AuthService-->SellerGroupService:return Boolean
+
+deactivate AuthService
+
+SellerGroupService->SellerGroupMapper:findBySgId(sgId)
+
+activate SellerGroupMapper
+
+SellerGroupMapper->connection:SELECT * FROM seller_group WHERE sg_id = ?
+
+activate connection
+
+connection-->SellerGroupMapper:return SellerGroup
+
+deactivate connection
+
+SellerGroupMapper-->SellerGroupService:return SellerGroup
+
+deactivate SellerGroupMapper
+
+SellerGroupService->SellerGroupService:sellerGroup.delete()
+
+deactivate SellerGroupService

@@ -1,0 +1,60 @@
+title OrderService.deleteFixedPriceOrder(orderId, username)
+
+participant "OrderService" as orders
+participant "AuthService" as auths
+
+participant "AppUserMapper" as apmapper
+participant "FixedPriceOrderMapper" as ordermapper
+participant "UserSgMappingMapper" as sgmapper
+
+participant "currentConnection :: Connection" as connection
+
+activate connection
+
+[->orders:deleteFixedPriceOrder(orderId, username)
+activate orders
+
+orders->orders:canUserEditFixedPriceOrder(orderId, username)
+orders->apmapper:findByUsername(username)
+activate apmapper
+apmapper->connection: SELECT * FROM app_user WHERE username = ?
+apmapper<--connection:AppUser
+orders<--apmapper:AppUser
+deactivate apmapper
+orders->ordermapper:findFixedPriceOrderById(orderId)
+activate ordermapper
+ordermapper->connection:SELECT * FROM fixed_order WHERE order_id = ?
+ordermapper<--connection:FixedPriceOrder
+orders<--ordermapper:FixedPriceOrder
+deactivate ordermapper
+orders->auths:checkUserSellerGroupPermissions(username, FixedPriceOrder.getListing().getSellerGroup().getSgId())
+activate auths
+auths->auths: isUserAdmin(username)
+auths->apmapper:findByUsername(username)
+activate apmapper
+apmapper->connection: SELECT * FROM app_user WHERE username = ?
+apmapper<--connection:AppUser
+auths<--apmapper:AppUser
+deactivate apmapper
+
+auths->auths:isUserInSellerGroup(username, sgId)
+auths->sgmapper:findUserSgMapping(username, sgId)
+activate sgmapper
+sgmapper->connection:SELECT * FROM user_sg_mapping WHERE username=? AND sg_id=?
+sgmapper<--connection:UserSgMapping
+auths<--sgmapper:UserSgMapping
+deactivate sgmapper
+
+orders<--auths:boolean
+deactivate auths
+
+orders->ordermapper:findFixedPriceOrderById(orderId)
+activate ordermapper
+ordermapper->connection:SELECT * FROM fixed_order WHERE order_id = ?
+ordermapper<--connection:FixedPriceOrder
+orders<--ordermapper:FixedPriceOrder
+deactivate ordermapper
+orders->orders:FixedPriceOrder.getListing().setQuantity(FixedPriceOrder.getListing().getQuantity() + FixedPriceOrder.getQuantity())
+orders->orders:FixedPriceOrder.delete()
+[<--orders:boolean
+deactivate orders

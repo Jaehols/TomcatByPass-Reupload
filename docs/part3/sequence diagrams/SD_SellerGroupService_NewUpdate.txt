@@ -1,0 +1,18 @@
+title SellerGroupMapper update()
+
+participant SellerGroupMapper
+participant "currentConnection :: Connection" as connection
+
+[->SellerGroupMapper:update(object, connection)
+
+activate SellerGroupMapper
+
+SellerGroupMapper->connection:UPDATE seller_group SET name=? WHERE sg_id = ?
+
+activate connection
+
+connection-->SellerGroupMapper:
+
+deactivate connection
+
+deactivate SellerGroupMapper

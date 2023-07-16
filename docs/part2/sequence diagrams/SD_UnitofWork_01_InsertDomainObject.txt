@@ -1,0 +1,44 @@
+title Insert Domain Object into DB
+
+actor User
+
+participant "thing :: DomainObject" as DomainObject
+
+
+participant "UnitOfWork" as uow
+
+participant "<<static>> DataMapper" as DataMapper
+
+participant "thingMapper :: DataMapper" as Mapper
+
+
+database PostgreSQL
+
+User -> *DomainObject: <<instantiate>>
+
+User -> DomainObject: create()
+
+activate DomainObject
+DomainObject -> uow: registerNew(obj)
+deactivate DomainObject
+
+activate uow
+uow->uow: new.add(obj)
+deactivate uow
+
+User -> uow: commit()
+activate uow
+loop for obj: DomainObject in new
+	
+    uow->DataMapper: getMapper(obj.class)
+    activate DataMapper
+    uow<--DataMapper: thingMapper
+    deactivate DataMapper
+    
+    uow->Mapper: insert(obj)
+    activate Mapper
+    Mapper -> PostgreSQL: sqlinsert(obj)
+    deactivate Mapper
+
+end
+deactivate uow

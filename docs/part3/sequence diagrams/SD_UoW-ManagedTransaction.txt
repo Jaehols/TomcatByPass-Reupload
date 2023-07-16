@@ -1,0 +1,59 @@
+title Unit of Work with ManagedTransactions
+
+participant ManagedTransaction
+participant "<<static>> Session" as Session
+participant "<<static>> UnitOfWork" as UnitOfWork
+participant "UnitOfWork" as uowi
+participant "currentConnection :: Connection" as Connection
+
+[ -> ManagedTransaction: executeTransaction(isolation_level, retries)
+activate ManagedTransaction
+	ManagedTransaction->Session: startSession()
+    activate Session
+    	opt if currentConnection != null
+     		Session -> Session : closeSession()
+     	end
+     	Session ->* Connection: currentConnection = new Connection()
+	 deactivate Session
+    
+    ManagedTransaction->Session : getSession()
+    activate Session
+	ManagedTransaction<--Session: currentConnection
+    deactivate Session
+    
+    ManagedTransaction->Connection: setAutoCommit(false)
+    activate Connection
+    break
+    deactivate Connection
+    ManagedTransaction->Connection: setTransactionIsolation(isolation_level)
+    activate Connection
+    break
+    deactivate Connection
+    
+    ManagedTransaction->UnitOfWork: startTransaction()
+    activate UnitOfWork
+    	UnitOfWork ->* uowi : new UnitOfWork()
+    deactivate UnitOfWork
+    
+    ManagedTransaction->ManagedTransaction: doTransactionOperations
+    	ref over ManagedTransaction,Connection: See individual transaction sequence diagrams in section 3.3
+    
+    ManagedTransaction->uowi: commit()
+    activate uowi
+    	ref over uowi,Connection: see UnitOfWork commit()
+    	ManagedTransaction<--uowi: success 
+    deactivate uowi
+    
+    opt !success and retries > 0
+    ManagedTransaction->ManagedTransaction : success = executeTransaction(isolation_level, retries-1)
+    end 
+    
+    [<--ManagedTransaction: success
+    deactivate ManagedTransaction
+    
+    
+    
+
+    
+    
+    

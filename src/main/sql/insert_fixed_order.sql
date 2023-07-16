@@ -1,0 +1,13 @@
+BEGIN;
+insert into fixed_order values ('c5dcfa2f-e97d-4ffc-83c1-789d628ce269', 'AppUser', '16ccfa18-3b95-4b8d-9fe5-51b3cf048a4a', current_timestamp, '1', '1500', '1A User st, Userville, Usonia');
+insert into fixed_order values ('ce9d8ef3-47eb-4bbf-b8fe-0c413ddaaefd', 'AppUser', '279aa5c8-4ce3-4482-9eb5-f1211aee5dba', current_timestamp, '1', '1', '1A User st, Userville, Usonia');
+insert into fixed_order values ('d4c572a5-bcd3-4455-a6f3-3914a0d494a8', 'Gus F', '98b7e5b5-78bf-4807-9af5-f5ca1db51fbe', current_timestamp, '4', '32', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('4bb25168-37b4-40bc-87d5-2be09762ae9b', 'Gus F', '98b7e5b5-78bf-4807-9af5-f5ca1db51fbe', current_timestamp, '2', '32', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('b1bedce2-4fbe-4d6c-be79-5f0cc8e2fd45', 'Gus F', '98b7e5b5-78bf-4807-9af5-f5ca1db51fbe', current_timestamp, '5', '32', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('7889b072-3316-4608-8526-4112b2a0fade', 'Gus F', '98b7e5b5-78bf-4807-9af5-f5ca1db51fbe', current_timestamp, '3', '32', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('a67aec5b-2290-4511-99af-c63b730c5701', 'Gus F', '98b7e5b5-78bf-4807-9af5-f5ca1db51fbe', current_timestamp, '2', '32', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('7fc16936-a369-4aa4-8f43-b760c3b3ab7e', 'Gus F', 'd2620838-7914-4bd7-a90b-bdc46471be22', current_timestamp, '1', '23.99', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('36e8a98e-59b9-44d1-8bab-3628fb8675c0', 'Gus F', '15dca6f2-8922-486e-82f2-a6eedb24ea21', current_timestamp, '1', '1300', '1213 Jefferson St NE, Albuquerque, NM');
+insert into fixed_order values ('50b7fb4a-1898-40d1-bb3c-6ae2b4aeb641', 'Jimmy', 'ff6d3d8c-11e0-4aef-bda8-8c0ddb499302', current_timestamp, '1', '123.99', '215 San Cristobal rd, Albuquerque, NM');
+insert into fixed_order values ('c45a4f1a-576a-4e2a-a0b3-77866c03e195', 'Jimmy', '67cd2e18-ec71-4352-83f8-53a21eae30d3', current_timestamp, '1', '20.99', '215 San Cristobal rd, Albuquerque, NM');
+END;

@@ -1,0 +1,34 @@
+title Session Lifecycle
+
+participant Thread
+participant "<<static>> Session" as Session
+participant "currentConnection :: Connection" as Connection
+
+activate Thread
+
+Thread -> Session: startSession()
+activate Session
+  opt if currentConnection != null
+  	Session -> Session : closeSession()
+  end
+  Session ->* Connection: currentConnection = new Connection()
+deactivate Session
+
+Thread -> Session : getSession()
+activate Session
+  Thread <-- Session : currentConnection
+deactivate Session
+
+Thread -> Connection : currentConnection.executeQuery()
+activate Connection
+  Thread <-- Connection : result
+deactivate Connection
+
+Thread -> Session : closeSession()
+activate Session
+  Session -> Connection: close()
+  destroy Connection
+  Session ->Session: currentConnection = null
+deactivate Session
+
+deactivate Thread

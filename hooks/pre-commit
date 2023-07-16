@@ -1,0 +1,23 @@
+#!/bin/bash 
+ 
+# Run Java autoformatter.
+mvn spotless:apply -q -Dspotless.check.skip=false
+ 
+if [[ $? != 0 ]]; then 
+    echo "================================================================" 
+    echo "PRE-COMMIT FORMATTER FAILED"
+    echo "================================================================" 
+    echo "PRE-COMMIT CAN BE DISABLED WITH: " 
+    echo "" 
+    echo "              sudo chmod u-x .git/hooks/pre-commit              " 
+    echo "" 
+    echo "================================================================" 
+    exit 1 
+fi 
+ 
+CHANGED_FILES=$(git diff --name-only --cached --diff-filter=ACMR) 
+git add $CHANGED_FILES 
+
+# Get latest version of hooks after commit is done.
+cp hooks/* .git/hooks/
+ 

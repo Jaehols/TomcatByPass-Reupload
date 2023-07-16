@@ -1,0 +1,11 @@
+BEGIN;
+insert into auction_listing values ('e3f81946-05d4-4d64-a935-88c80e005d49', 'a866b2db-b369-42c5-9768-28d330d3040a', current_timestamp, '0', 'Plain white rice', '2025-09-17 10:14:32.552968', 'NEW');
+insert into auction_listing values ('8770a207-6c72-465e-a1ef-46a128c6ad71', 'a866b2db-b369-42c5-9768-28d330d3040a', current_timestamp, '5.00', 'KFC Zinger Box', '2023-09-17 10:14:32.552968', 'USED');
+insert into auction_listing values ('bcf8daac-b9b3-4a2f-a33c-5ba404ce0a61', 'a866b2db-b369-42c5-9768-28d330d3040a', current_timestamp, '0', 'Coles Pizza (frozen)', '2023-09-17 10:14:32.552968', 'NEW');
+insert into auction_listing values ('bc3510c2-69ba-43b0-a990-9001e7b3aea3', '011945c2-a2f0-4d71-b6df-22a0467dc013', current_timestamp, '0', 'Nike Air Vapormax', '2023-09-17 10:14:32.552968', 'USED');
+insert into auction_listing values ('31f93903-f89d-45fc-979d-55c0fd6a19a3', '011945c2-a2f0-4d71-b6df-22a0467dc013', current_timestamp, '0', 'Worlds best programmer mug', '2023-09-17 10:14:32.552968', 'NEW');
+insert into auction_listing values ('a7122117-a278-4a68-a82d-061fc51e1863', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '0', 'Columbian Special Blend', '2023-09-17 10:14:32.552968', 'NEW');
+insert into auction_listing values ('19e5fa77-9899-4384-91d6-aab9e8028be7', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '0', 'Pablos Purest', '2023-09-17 10:14:32.552968', 'NEW');
+insert into auction_listing values ('32e48f6c-cf8a-49fd-b719-7f81601eb338', 'def8570f-358d-4d56-85da-b0f9d3440fc6', current_timestamp, '0', 'Cheap and dirty special', '2023-09-17 10:14:32.552968', 'USED');
+insert into auction_listing values ('01e48a6c-cf8a-49fd-b719-7f81601eb338', 'def8570f-358d-4d56-85da-b0f9d3440fc6', '2019-09-17 10:14:32.552968', '5', 'Mint Condition Bachelors Degree (Luke Rosa)', '2019-09-30 10:14:32.552968', 'USED');
+END;

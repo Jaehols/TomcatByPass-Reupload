@@ -1,0 +1,20 @@
+
+title Data Mapper
+
+
+participant "Class" as class
+
+
+participant "<<static>> thingMapper" as tMapper
+
+
+database PostgreSQL
+
+
+activate class 
+class->tMapper:getThingByParam(param)
+activate tMapper
+tMapper->PostgreSQL:sqlSelect
+tMapper<--PostgreSQL:sqlStatement
+class<--tMapper:thing
+deactivate tMapper

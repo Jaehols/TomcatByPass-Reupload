@@ -1,0 +1,58 @@
+
+title Lazy Load, Ghost: Fixed Listing
+
+
+participant "Class" as class
+
+
+participant "<<static>> FixedListingMapper" as tMapper
+
+
+
+participant "fixedListing (ghost) :: FixedListing\n\nlistingId: -UUID-\nsellerGroupId: null\n...\n...\nquantity: null" as flghost
+
+
+participant "fixedListing (full) :: FixedListing" as fl
+
+
+
+database PostgreSQL
+
+activate class 
+class->tMapper:findAllLazy()
+activate tMapper
+
+tMapper->PostgreSQL:sqlSelect (lazyMS)
+tMapper<--PostgreSQL:sqlStatement
+
+
+tMapper->*flghost:<<instantiate>>
+class<--tMapper:List<FixedListing> (ghosts)
+deactivate tMapper
+class->flghost:getParam()
+activate flghost
+
+flghost->flghost:lazyLoad()
+activate flghost
+tMapper<-flghost:findByListingId(listingId)
+activate tMapper
+tMapper->PostgreSQL:sqlSelect (eagerMS)
+tMapper<--PostgreSQL:sqlStatement
+tMapper->*fl:<<instantiate>>
+tMapper-->flghost:fixedListing (full)
+deactivate tMapper
+flghost->fl:getSellerGroupId()
+activate fl
+flghost<--fl:sellerGroupId
+deactivate fl
+flghost->fl:...
+activate fl
+flghost<--fl:...
+deactivate fl
+flghost->fl:getQuantity()
+activate fl
+flghost<--fl:quantity
+deactivate fl
+deactivate flghost
+class<-flghost:param
+deactivate flghost

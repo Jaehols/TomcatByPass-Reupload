@@ -1,0 +1,18 @@
+title UserSgMappingMapper insert()
+
+participant UserSgMappingMapper
+participant "currentConnection :: Connection" as connection
+
+[->UserSgMappingMapper:insert(object, connection)
+
+activate UserSgMappingMapper
+
+UserSgMappingMapper->connection:INSERT INTO user_sg_mapping (username, sg_id) VALUES (?, ?)
+
+activate connection
+
+connection-->UserSgMappingMapper:
+
+deactivate connection
+
+deactivate UserSgMappingMapper
